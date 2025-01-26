@@ -187,6 +187,5 @@ Request parameters:
 
 ---
 
-## **License**
 
 By following this README, you'll be able to get your **Homora** project up and running locally for development purposes. If you have any issues, feel free to open an issue on the repository.
