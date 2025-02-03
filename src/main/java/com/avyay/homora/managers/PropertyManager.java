@@ -1,5 +1,6 @@
 package com.avyay.homora.managers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,9 @@ public class PropertyManager {
 
         return PropertyMapper.INSTANCE.toPagePropertyResponse(propertyEntityPage);
     }   
+
+    public List<PropertyDTO> getPropertiesByOwner(Long ownerId){
+        return PropertyMapper.INSTANCE.toPropertyDTOList(propertyRepo.findByOwnerId(ownerId));
+    }
 
 }

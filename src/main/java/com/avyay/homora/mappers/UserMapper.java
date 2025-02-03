@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import com.avyay.homora.dtos.UserDTO;
 import com.avyay.homora.entities.UserEntity;
 import com.avyay.homora.requests.UserRequest;
+import com.avyay.homora.responses.UserResponse;
 
 @Mapper
 public interface UserMapper {
@@ -15,4 +16,6 @@ public interface UserMapper {
     UserDTO toUserDTO(UserEntity userEntity);
 
     UserDTO toUserDTO(UserRequest userRequest);
+
+    UserResponse toUserResponse(UserDTO userDTO);
 }

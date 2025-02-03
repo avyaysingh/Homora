@@ -1,5 +1,7 @@
 package com.avyay.homora.mappers;
 
+import java.util.List;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
@@ -21,9 +23,13 @@ public interface PropertyMapper {
 
     PropertyResponse toPropertyResponse(PropertyDTO propertyDTO);
 
-    default Page<PropertyResponse> toPagePropertyResponse(Page<PropertyEntity> propertyEntityPage){
+    default Page<PropertyResponse> toPagePropertyResponse(Page<PropertyEntity> propertyEntityPage) {
         return propertyEntityPage.map(this::toResponse);
     }
 
     PropertyResponse toResponse(PropertyEntity entity);
+
+    List<PropertyDTO> toPropertyDTOList(List<PropertyEntity> propertyList);
+
+    List<PropertyResponse> toPropertyResponseList(List<PropertyDTO> properties);
 }

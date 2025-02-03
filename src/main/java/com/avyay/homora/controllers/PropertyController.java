@@ -78,4 +78,26 @@ public class PropertyController {
         }
     }
 
+    @GetMapping("/{propertyId}")
+    public ResponseEntity<?> getPropertyById(@PathVariable Long propertyId) {
+        try {
+            return ResponseEntity.ok(propertyService.getPropertyResponse(propertyId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/{propertyId}/interest")
+    public ResponseEntity<?> expressInterest(@PathVariable Long propertyId,
+            @RequestHeader("Authorization") String token) {
+        try {
+            String userEmail = jwtUtility.extractEmail(token);
+
+            propertyService.sendInterestEmail(propertyId, userEmail);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

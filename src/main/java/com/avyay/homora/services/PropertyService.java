@@ -18,6 +18,7 @@ import com.avyay.homora.managers.UserManager;
 import com.avyay.homora.mappers.PropertyMapper;
 import com.avyay.homora.requests.CreatePropertyRequest;
 import com.avyay.homora.responses.PropertyResponse;
+import com.avyay.homora.utilities.EmailUtility;
 
 @Service
 public class PropertyService {
@@ -27,6 +28,9 @@ public class PropertyService {
 
     @Autowired
     private UserManager userManager;
+
+    @Autowired
+    private EmailUtility emailUtility;
 
     private final String UPLOAD_DIR = "D:\\CodN\\WebDev\\Projects\\property-listing\\homora\\uploads\\";
 
@@ -92,5 +96,48 @@ public class PropertyService {
     public Page<PropertyResponse> getAllProperties(String title, String location, Double minPrice, Double maxPrice,
             PropertyTypeEnum type, int page, int size) {
         return propertyManager.getAllProperties(title, location, minPrice, maxPrice, type, page, size);
+    }
+
+    public PropertyResponse getPropertyResponse(Long propertyId) {
+        PropertyDTO propertyDTO = propertyManager.findById(propertyId);
+
+        if (propertyDTO == null) {
+            throw new IllegalArgumentException("Property not found");
+        }
+
+        return PropertyMapper.INSTANCE.toPropertyResponse(propertyDTO);
+    }
+
+    public void sendInterestEmail(Long propertyId, String userEmail) {
+        PropertyDTO property = propertyManager.findById(propertyId);
+
+        if (property == null) {
+            throw new IllegalArgumentException("Property not found");
+        }
+
+        UserDTO userDTO = userManager.getByEmail(userEmail);
+
+        if (userDTO == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        UserDTO ownerDTO = userManager.getByEmail(property.getOwner().getEmail());
+
+        if (ownerDTO == null) {
+            throw new IllegalArgumentException("Owner not found");
+        }
+
+        if (ownerDTO.getEmail().equals(userDTO.getEmail())) {
+            throw new SecurityException("Cannot send interest email");
+        }
+
+        emailUtility.sendEmail(ownerDTO.getEmail(),
+                "Interest in Your Property: " + property.getTitle(),
+                "Dear " + ownerDTO.getName() + ",\n\n" +
+                        "You have received interest for your property \"" + property.getTitle() + "\".\n\n" +
+                        "Details:\n" +
+                        "Name: " + userDTO.getName() + "\n" +
+                        "Email: " + userDTO.getEmail() + "\n" +
+                        "Best regards,\nYour Property Listing Platform");
     }
 }

@@ -1,17 +1,24 @@
 package com.avyay.homora.services;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.avyay.homora.dtos.PropertyDTO;
 import com.avyay.homora.dtos.UserDTO;
+import com.avyay.homora.managers.PropertyManager;
 import com.avyay.homora.managers.UserManager;
+import com.avyay.homora.mappers.PropertyMapper;
+import com.avyay.homora.mappers.UserMapper;
 import com.avyay.homora.requests.LoginRequest;
 import com.avyay.homora.requests.UserRequest;
 import com.avyay.homora.responses.LoginResponse;
+import com.avyay.homora.responses.PropertyResponse;
+import com.avyay.homora.responses.UserResponse;
 import com.avyay.homora.utilities.EmailUtility;
 import com.avyay.homora.utilities.JwtUtility;
 
@@ -29,6 +36,9 @@ public class UserService {
 
     @Autowired
     private JwtUtility jwtUtility;
+
+    @Autowired
+    private PropertyManager propertyManager;
 
     public String signup(UserRequest userRequest) {
         UserDTO userDTO = userManager.getByEmail(userRequest.getEmail());
@@ -94,5 +104,39 @@ public class UserService {
 
         String token = jwtUtility.generateToken(userDTO.getEmail());
         return new LoginResponse(200, "Login Successful", token);
+    }
+
+    public UserResponse getUserProfile(String email) {
+        UserDTO userDTO = userManager.getByEmail(email);
+
+        if (userDTO == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        return UserMapper.INSTANCE.toUserResponse(userDTO);
+    }
+
+    public void updateUserProfile(String email, UserRequest updateRequest) {
+        UserDTO user = userManager.getByEmail(email);
+
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        user.setName(updateRequest.getName());
+        user.setPhone(updateRequest.getPhone());
+
+        userManager.save(user);
+    }
+
+    public List<PropertyResponse> getUserProperties(String email) {
+        UserDTO user = userManager.getByEmail(email);
+
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        List<PropertyDTO> properties = propertyManager.getPropertiesByOwner(user.getId());
+        return PropertyMapper.INSTANCE.toPropertyResponseList(properties);
     }
 }

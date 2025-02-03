@@ -1,5 +1,7 @@
 package com.avyay.homora.repos;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,4 +28,6 @@ public interface PropertyRepo extends JpaRepository<PropertyEntity, Long> {
                         @Param("maxPrice") Double maxPrice,
                         @Param("type") PropertyTypeEnum type,
                         Pageable pageable);
+
+        List<PropertyEntity> findByOwnerId(Long ownerId);
 }
