@@ -8,7 +8,9 @@ import org.springframework.data.domain.Page;
 
 import com.avyay.homora.dtos.PropertyDTO;
 import com.avyay.homora.entities.PropertyEntity;
+import com.avyay.homora.projection.PropertyProjection;
 import com.avyay.homora.requests.CreatePropertyRequest;
+import com.avyay.homora.responses.PropertyProjectionResponse;
 import com.avyay.homora.responses.PropertyResponse;
 
 @Mapper
@@ -32,4 +34,13 @@ public interface PropertyMapper {
     List<PropertyDTO> toPropertyDTOList(List<PropertyEntity> propertyList);
 
     List<PropertyResponse> toPropertyResponseList(List<PropertyDTO> properties);
+
+    // projection
+
+    PropertyProjectionResponse toResponse(PropertyProjection projection);
+
+    default Page<PropertyProjectionResponse> toPagePropertyProjectionResponse(
+            Page<PropertyProjection> propertyProjection) {
+        return propertyProjection.map(this::toResponse);
+    }
 }

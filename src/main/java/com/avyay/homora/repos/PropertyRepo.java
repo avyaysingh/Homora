@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.avyay.homora.entities.PropertyEntity;
 import com.avyay.homora.enums.PropertyTypeEnum;
+import com.avyay.homora.projection.PropertyProjection;
 
 @Repository
 public interface PropertyRepo extends JpaRepository<PropertyEntity, Long> {
@@ -21,7 +22,7 @@ public interface PropertyRepo extends JpaRepository<PropertyEntity, Long> {
                         "(:minPrice IS NULL OR p.price >= :minPrice) AND " +
                         "(:maxPrice IS NULL OR p.price <= :maxPrice) AND " +
                         "(:type IS NULL OR p.type = :type)")
-        Page<PropertyEntity> findAllWithFilters(
+        Page<PropertyProjection> findAllWithFilters(
                         @Param("title") String title,
                         @Param("location") String location,
                         @Param("minPrice") Double minPrice,

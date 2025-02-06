@@ -13,7 +13,9 @@ import com.avyay.homora.dtos.PropertyDTO;
 import com.avyay.homora.entities.PropertyEntity;
 import com.avyay.homora.enums.PropertyTypeEnum;
 import com.avyay.homora.mappers.PropertyMapper;
+import com.avyay.homora.projection.PropertyProjection;
 import com.avyay.homora.repos.PropertyRepo;
+import com.avyay.homora.responses.PropertyProjectionResponse;
 import com.avyay.homora.responses.PropertyResponse;
 
 @Component
@@ -39,17 +41,19 @@ public class PropertyManager {
         return null;
     }
 
-    public Page<PropertyResponse> getAllProperties(String title, String location, Double minPrice, Double maxPrice,
+    public Page<PropertyProjectionResponse> getAllProperties(String title, String location, Double minPrice,
+            Double maxPrice,
             PropertyTypeEnum type, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<PropertyEntity> propertyEntityPage = propertyRepo.findAllWithFilters(title, location, minPrice, maxPrice, type,
+        Page<PropertyProjection> propertyEntityPage = propertyRepo.findAllWithFilters(title, location, minPrice,
+                maxPrice, type,
                 pageable);
 
-        return PropertyMapper.INSTANCE.toPagePropertyResponse(propertyEntityPage);
-    }   
+        return PropertyMapper.INSTANCE.toPagePropertyProjectionResponse(propertyEntityPage);
+    }
 
-    public List<PropertyDTO> getPropertiesByOwner(Long ownerId){
+    public List<PropertyDTO> getPropertiesByOwner(Long ownerId) {
         return PropertyMapper.INSTANCE.toPropertyDTOList(propertyRepo.findByOwnerId(ownerId));
     }
 

@@ -17,6 +17,7 @@ import com.avyay.homora.managers.PropertyManager;
 import com.avyay.homora.managers.UserManager;
 import com.avyay.homora.mappers.PropertyMapper;
 import com.avyay.homora.requests.CreatePropertyRequest;
+import com.avyay.homora.responses.PropertyProjectionResponse;
 import com.avyay.homora.responses.PropertyResponse;
 import com.avyay.homora.utilities.EmailUtility;
 
@@ -93,7 +94,8 @@ public class PropertyService {
 
     }
 
-    public Page<PropertyResponse> getAllProperties(String title, String location, Double minPrice, Double maxPrice,
+    public Page<PropertyProjectionResponse> getAllProperties(String title, String location, Double minPrice,
+            Double maxPrice,
             PropertyTypeEnum type, int page, int size) {
         return propertyManager.getAllProperties(title, location, minPrice, maxPrice, type, page, size);
     }
